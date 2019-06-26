@@ -1,0 +1,52 @@
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+    }
+}
+
+group 'me.kennethyo.library'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'com.google.guava:guava:28.0-jre'
+}
+
+apply plugin: 'com.jfrog.bintray'
+
+Properties properties = new Properties()
+properties.load(new File('./user.properties').newDataInputStream())
+
+bintray {
+    user = properties.get('username')
+    key = properties.get('key')
+    publications = ['Production']
+    configurations = ['archives']
+    override = true
+    pkg {
+        repo = group
+        name = 'version-number'
+        description = "Represents, parses, and compares version numbers."
+        publish = true
+        publicDownloadNumbers = true
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/KennethYo/VersionNumber'
+        dryRun = true
+        version {
+            name = this.version
+            released = new Date()
+            vcsTag = this.version
+        }
+    }
+}
