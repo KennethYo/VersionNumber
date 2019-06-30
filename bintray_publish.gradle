@@ -1,5 +1,26 @@
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId GROUP
+            artifactId ARTIFACT_ID
+            version VERSION_NAME
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
 
 def properties = new Properties()
 properties.load(new File(rootDir, "user.properties").newDataInputStream())
@@ -7,11 +28,18 @@ properties.load(new File(rootDir, "user.properties").newDataInputStream())
 bintray {
     user = properties.get("usr")
     key = properties.get("key")
+    configurations = ['archives']
+    publish = true
     pkg {
         repo = GROUP
         name = NAME
-
-        licenses = LICENSES
+        desc = DESCRIPTION
+        websiteUrl = SCM_URL
+        issueTrackerUrl = SCM_ISSUE_URL
         vcsUrl = SCM_CONNECTION
+        licenses = LICENSES
+        version {
+            name = VERSION_NAME
+        }
     }
 }
