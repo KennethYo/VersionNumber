@@ -1,12 +1,14 @@
-apply plugin: 'java'
-
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
     }
+}
+
+plugins {
+    id 'java-library'
 }
 
 group 'me.kennethyo.library'
@@ -23,30 +25,24 @@ dependencies {
     compile 'com.google.guava:guava:28.0-jre'
 }
 
-apply plugin: 'com.jfrog.bintray'
+ext.NAME = "VersionNumber"
+ext.URL = "https://github.com/KennethYo/VersionNumber"
+ext.DESCRIPTION = "Represents, parses, and compares version numbers."
 
-Properties properties = new Properties()
-properties.load(new File('./user.properties').newDataInputStream())
+ext.GROUP = group
+ext.ARTIFACT_ID = "version-number"
 
-bintray {
-    user = properties.get('username')
-    key = properties.get('key')
-    publications = ['Production']
-    configurations = ['archives']
-    override = true
-    pkg {
-        repo = group
-        name = 'version-number'
-        description = "Represents, parses, and compares version numbers."
-        publish = true
-        publicDownloadNumbers = true
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/KennethYo/VersionNumber'
-        dryRun = true
-        version {
-            name = this.version
-            released = new Date()
-            vcsTag = this.version
-        }
-    }
+ext.VERSION_NAME = version
+ext.VERSION_DESCRIPTION = ""
+
+ext.LICENSES = ['Apache-2.0']
+
+ext.SCM_URL = "https://github.com/KennethYo/VersionNumber"
+ext.SCM_ISSUE_URL = "https://github.com/KennethYo/VersionNumber/issues"
+ext.SCM_CONNECTION = "https://github.com/KennethYo/VersionNumber.git"
+
+
+def file = new File(rootDir, "user.properties")
+if (file.exists()) {
+    apply from: "${project.rootDir}/bintray_publish.gradle"
 }

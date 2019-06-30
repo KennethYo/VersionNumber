@@ -1,0 +1,17 @@
+apply plugin: 'com.jfrog.bintray'
+
+
+def properties = new Properties()
+properties.load(new File(rootDir, "user.properties").newDataInputStream())
+
+bintray {
+    user = properties.get("usr")
+    key = properties.get("key")
+    pkg {
+        repo = GROUP
+        name = NAME
+
+        licenses = LICENSES
+        vcsUrl = SCM_CONNECTION
+    }
+}
